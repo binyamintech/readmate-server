@@ -24,8 +24,8 @@ const UserSchema = new mongoose.Schema({
             required: true
         },
         level: {
-            type: String,
-            enum: ["student", "high-school", "other"]
+            type: Number,
+            // enum: [7,10]
         },
         classId: {
             type: Number,
