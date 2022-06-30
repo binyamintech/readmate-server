@@ -5,7 +5,7 @@ const userTrainReadingLogic = require('../BL/userTrainReadingLogic')
 
 router.get('/', async(req,res)=>{
     try{
-        console.log("get all TR")
+
     const users = await userTrainReadingLogic.getAllUserTrainReading();
     res.send(users)
     }catch(error){
