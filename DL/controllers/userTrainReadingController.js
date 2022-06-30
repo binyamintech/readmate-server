@@ -1,6 +1,7 @@
-const { userTestReadingModel } = require('../models/userTrainReading')
+const  userTestReadingModel  = require('../models/userTrainReading')
 
 async function create(data) {
+    console.log("create "+data);
     return await userTestReadingModel.create(data);
 
 }
