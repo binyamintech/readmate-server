@@ -1,37 +1,30 @@
 const userController = require("../DL/controLlers/userController");
-
-// module.exports function getAllUsers = ()=>{
-//     userController.read({})
-// }
-// async function register(){
+const jwtFn = require("../Middleware/auth");
 exports.getAllUsers = () => {
   return userController.read({});
 };
-// }
-// let user1={
-//     firstName : "gtu",
-//     lastName : "kolm",
-//     email :"bonbon@gmail.com",
-//     password:"mgmgmg222",
 
-//     address:{
-//         street:"chaim shofet hachoen",
-//         city:"Tel",
-//         number:8
-//     },
-//     gender:"male"
-// }
-// let user2={
-//     firstName : "yossef",
-//     lastName : "amar",
-//     email :"yossef@gmail.com",
-//     password:"ldhdjd4568",
+const createNewUser = async (user) => {
+  try {
+    const { email, password, firstName, lastName, classId } = user;
 
-//     address:{
-//         street:"chaim shofet hachoen",
-//         city:"efrat",
-//         number:2222222
-//     },
-//     gender:"male"
-// }
-// create(user2)
+    if (!email || !password || !firstName || !lastName || !classId)
+      throw { code: 400, message: "missing data" };
+
+    // const userExist = await userController.read();
+    const userExist = await userController.read({ email });
+
+    if (userExist) throw { code: 409, message: "duplicate email", email };
+
+    const newUser = await userController.create(user);
+
+    console.log(newUser);
+
+    const token = jwtFn.createToken(newUser._id);
+    return token;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = { createNewUser, getAllUsers };
