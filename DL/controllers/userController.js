@@ -17,8 +17,6 @@ async function update(filter, newData) {
 }
 async function findOneAndUpdate(filter, newData) {
   console.log("findOneAndUpdate controller");
-  console.log(filter);
-  console.log(newData);
   return await userModel.find(filter, newData);
 }
 async function del(filter) {

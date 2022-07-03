@@ -1,21 +1,35 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const secret = process.env.SECRET;
-console.log("secret", secret);
 
 function createToken(user) {
-  return jwt.sign({ user }, secret, { expiresIn: "1H" });
+  console.log("token details", user);
+  return jwt.sign({ user }, secret, { expiresIn: "10m" });
 }
+
 function auth(req, res, next) {
-  //if tokenvalid
-  console.log(req.body);
-  let userFrpmToken = jwt.verify(req.body.token, secret);
-  console.log(userFrpmToken);
-  next();
+  console.log("headers", req.headers.authorization);
+  let token = req.headers.authorization.substring(
+    7,
+    req.headers.authorization.length
+  );
+  try {
+    let userFromToken = jwt.verify(token, secret);
+    console.log("userFromToken", userFromToken);
+    req.user = userFromToken.user;
+    next();
+  } catch (e) {
+    res.status(403).send(e);
+    console.log("e", e);
+  }
 }
 
 function verifyToken(token) {
-  return jwt.verify(token, secret);
+  try {
+    return jwt.verify(token, secret);
+  } catch (e) {
+    return e;
+  }
 }
 
 module.exports = { createToken, verifyToken, auth };

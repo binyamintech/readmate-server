@@ -16,13 +16,11 @@ const createNewUser = async (user) => {
       throw { code: 400, message: "missing data" };
 
     // const userExist = await userController.read();
-    const userExist = await userController.read({ email });
+    const userExist = await userController.readOne({ email });
     if (userExist) throw { code: 409, message: "duplicate email", email };
     let hashedPassword = await bcrypt.hash(user.password, salt);
     user.password = hashedPassword;
-    console.log("user", user);
     const newUser = await userController.create(user);
-    console.log("newUser", newUser);
     const token = jwtFn.createToken(
       newUser.firstName,
       newUser.lastName,
@@ -47,12 +45,12 @@ const login = async (loginDetails) => {
       requestedUser.password
     );
     if (dePassword) {
-      const token = jwtFn.createToken(
-        requestedUser.firstName,
-        requestedUser.lastName,
-        requestedUser._id,
-        requestedUser.email
-      );
+      const token = jwtFn.createToken({
+        firstName: requestedUser.firstName,
+        lastName: requestedUser.lastName,
+        _id: requestedUser._id,
+        email: requestedUser.email,
+      });
       requestedUser.password = undefined;
       return { token, user: requestedUser };
     } else {
