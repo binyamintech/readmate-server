@@ -38,9 +38,7 @@ const createNewUser = async (user) => {
 
 const login = async (loginDetails) => {
   const { email, password } = loginDetails;
-  const requestedUser = await userController.read({ email });
-  console.log(requestedUser, "requestedUser");
-  console.log("login", loginDetails);
+  const requestedUser = await userController.readOne({ email });
   if (!requestedUser) {
     return { code: 400, message: "one of details not fit" };
   } else {
@@ -48,7 +46,6 @@ const login = async (loginDetails) => {
       loginDetails.password,
       requestedUser.password
     );
-    console.log(dePassword);
     if (dePassword) {
       const token = jwtFn.createToken(
         requestedUser.firstName,
@@ -57,14 +54,11 @@ const login = async (loginDetails) => {
         requestedUser.email
       );
       requestedUser.password = undefined;
-      return { token, requestedUser };
+      return { token, user: requestedUser };
     } else {
       return { code: 401, message: "one of details not fit" };
     }
   }
-
-  //check password(bcryptcompare)
-  //check password(bcryptcompare)
 };
 
 module.exports = { createNewUser, getAllUsers, login };

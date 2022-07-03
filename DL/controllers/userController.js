@@ -16,4 +16,4 @@ async function del(filter) {
   await update(filter, { isActive: flase });
 }
 
-module.exports = { create, read, update, del };
+module.exports = { create, read, update, del, readOne };
